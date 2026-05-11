@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RolUsuarioService {
@@ -38,7 +39,14 @@ public class RolUsuarioService {
             return null;
         }
 
-        rolExistente.setNombreRol(rolUsuario.getNombreRol().trim().toUpperCase());
+        String nombreNormalizado = rolUsuario.getNombreRol().trim().toUpperCase();
+
+        Optional<RolUsuario> rolDuplicado = rolUsuarioRepository.findByNombreRolIgnoreCase(nombreNormalizado);
+        if(rolDuplicado.isPresent() && !rolDuplicado.get().getIdRol().equals(id)){
+            return null;
+        }
+
+        rolExistente.setNombreRol(nombreNormalizado);
         return rolUsuarioRepository.save(rolExistente);
     }
 

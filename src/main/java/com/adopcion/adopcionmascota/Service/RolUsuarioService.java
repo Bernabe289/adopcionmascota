@@ -18,9 +18,12 @@ public class RolUsuarioService {
     }
 
     public RolUsuario guardarRol(RolUsuario rolUsuario){
-        if (rolUsuarioRepository.existsByNombreRol(rolUsuario.getNombreRol())){
+        String nombre = rolUsuario.getNombreRol().trim().toUpperCase();
+
+        if (rolUsuarioRepository.existsByNombreRolIgnoreCase(nombre)){
             return null;
         }
+        rolUsuario.setNombreRol(nombre);
         return rolUsuarioRepository.save(rolUsuario);
     }
 
@@ -35,7 +38,7 @@ public class RolUsuarioService {
             return null;
         }
 
-        rolExistente.setNombreRol(rolUsuario.getNombreRol());
+        rolExistente.setNombreRol(rolUsuario.getNombreRol().trim().toUpperCase());
         return rolUsuarioRepository.save(rolExistente);
     }
 
@@ -46,5 +49,6 @@ public class RolUsuarioService {
         rolUsuarioRepository.deleteById(id);
         return true;
     }
+
 
 }

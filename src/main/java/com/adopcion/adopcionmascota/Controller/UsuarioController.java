@@ -61,8 +61,8 @@ public class UsuarioController {
         boolean userEliminado = usuarioService.eliminarUsuario(id);
 
         if (!userEliminado){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado.") //404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado."); //404
         }
-        return ResponseEntity.ok("Usuario eliminado.") //200
+        return ResponseEntity.ok("Usuario eliminado."); //200
     }
 }

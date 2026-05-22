@@ -21,8 +21,8 @@ public class Raza {
     @Column(name = "nombre_raza", nullable = false, unique = true, length = 50)
     private String nombreRaza;
 
-    @ManyToOne
-    @JoinColumn(name = "id_especie", nullable = false)
+
+    @Column(name = "id_especie", nullable = false)
     private Integer idEspecie;
 }
 

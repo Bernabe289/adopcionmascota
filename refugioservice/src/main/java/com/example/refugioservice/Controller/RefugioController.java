@@ -27,6 +27,17 @@ public class RefugioController {
         return ResponseEntity.ok(refugios);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Refugio> getRefugioById(@PathVariable Integer id) {
+        Refugio refugio = refugioService.buscarPorId(id);
+
+        if (refugio == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(refugio);
+    }
+
     @PostMapping
     public ResponseEntity<?> createRefugio(@Valid @RequestBody Refugio refugio) {
         Refugio nuevoRefugio = refugioService.guardarRefugio(refugio);

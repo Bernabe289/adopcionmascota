@@ -21,10 +21,10 @@ public class SolicitudAdopcionService {
     }
 
     public SolicitudAdopcion guardarSolicitud (SolicitudAdopcion solicitudAdopcion){
-        if (solicitudAdopcion.getIdMascota() == null){
+        if (solicitudAdopcion.getIdUsuario() == null){
             return null;
         }
-        if (solicitudAdopcion.getIdSolicitud() == null){
+        if (solicitudAdopcion.getIdMascota() == null){
             return null;
         }
         solicitudAdopcion.setEstadoSolicitud(solicitudAdopcion.getEstadoSolicitud().trim().toUpperCase());

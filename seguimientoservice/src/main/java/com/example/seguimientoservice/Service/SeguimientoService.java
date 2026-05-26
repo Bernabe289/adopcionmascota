@@ -1,7 +1,10 @@
 package com.example.seguimientoservice.Service;
 
+import com.example.seguimientoservice.Client.SolicitudClient;
+import com.example.seguimientoservice.Dto.SolicitudDTO;
 import com.example.seguimientoservice.Model.Seguimiento;
 import com.example.seguimientoservice.Repository.SeguimientoRepository;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,9 @@ public class SeguimientoService {
     @Autowired
     private SeguimientoRepository seguimientoRepository;
 
+    @Autowired
+    private SolicitudClient solicitudClient;
+
     public List<Seguimiento> listarSeguimientos() {
         return seguimientoRepository.findAll();
     }
@@ -21,6 +27,16 @@ public class SeguimientoService {
 
         // Valida que el seguimiento esté asociado a una solicitud
         if (seguimiento.getIdSolicitud() == null) {
+            return null;
+        }
+
+        try {
+            SolicitudDTO solicitud = solicitudClient.getSolicitudById(seguimiento.getIdSolicitud());
+
+            if (solicitud == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 
@@ -42,6 +58,16 @@ public class SeguimientoService {
 
         // Mantiene solo el ID de solicitud porque está en otro microservicio
         if (seguimiento.getIdSolicitud() == null) {
+            return null;
+        }
+
+        try {
+            SolicitudDTO solicitud = solicitudClient.getSolicitudById(seguimiento.getIdSolicitud());
+
+            if (solicitud == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 

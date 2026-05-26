@@ -1,7 +1,10 @@
 package com.example.vacunaservice.Service;
 
+import com.example.vacunaservice.Client.HistorialVetClient;
+import com.example.vacunaservice.Dto.HistorialVetDTO;
 import com.example.vacunaservice.Model.Vacuna;
 import com.example.vacunaservice.Repository.VacunaRepository;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,9 @@ public class VacunaService {
         @Autowired
         private VacunaRepository vacunaRepository;
 
+        @Autowired
+        private HistorialVetClient historialVetClient;
+
         public List<Vacuna> listarVacunas() {
                 return vacunaRepository.findAll();
         }
@@ -21,6 +27,16 @@ public class VacunaService {
 
                 // Valida que la vacuna esté asociada a un historial veterinario
                 if (vacuna.getIdHistorial() == null) {
+                        return null;
+                }
+
+                try {
+                        HistorialVetDTO historial = historialVetClient.getHistorialById(vacuna.getIdHistorial());
+
+                        if (historial == null) {
+                                return null;
+                        }
+                } catch (FeignException error) {
                         return null;
                 }
 
@@ -42,6 +58,16 @@ public class VacunaService {
 
                 // Mantiene solo el ID del historial porque está en otro microservicio
                 if (vacuna.getIdHistorial() == null) {
+                        return null;
+                }
+
+                try {
+                        HistorialVetDTO historial = historialVetClient.getHistorialById(vacuna.getIdHistorial());
+
+                        if (historial == null) {
+                                return null;
+                        }
+                } catch (FeignException error) {
                         return null;
                 }
 

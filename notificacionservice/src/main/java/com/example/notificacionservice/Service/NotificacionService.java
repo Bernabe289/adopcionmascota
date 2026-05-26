@@ -1,7 +1,10 @@
 package com.example.notificacionservice.Service;
 
+import com.example.notificacionservice.Client.UsuarioClient;
+import com.example.notificacionservice.Dto.UsuarioDTO;
 import com.example.notificacionservice.Model.Notificacion;
 import com.example.notificacionservice.Repository.NotificacionRepository;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,9 @@ public class NotificacionService {
     @Autowired
     private NotificacionRepository notificacionRepository;
 
+    @Autowired
+    private UsuarioClient usuarioClient;
+
     public List<Notificacion> listarNotificaciones() {
         return notificacionRepository.findAll();
     }
@@ -21,6 +27,16 @@ public class NotificacionService {
 
         // Valida que la notificación esté asociada a un usuario
         if (notificacion.getIdUsuario() == null) {
+            return null;
+        }
+
+        try {
+            UsuarioDTO usuario = usuarioClient.getUsuarioById(notificacion.getIdUsuario());
+
+            if (usuario == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 
@@ -43,6 +59,16 @@ public class NotificacionService {
 
         // Mantiene solo el ID de usuario porque Usuario está en otro microservicio
         if (notificacion.getIdUsuario() == null) {
+            return null;
+        }
+
+        try {
+            UsuarioDTO usuario = usuarioClient.getUsuarioById(notificacion.getIdUsuario());
+
+            if (usuario == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 

@@ -1,5 +1,7 @@
 package com.example.historialvetservice.Service;
-
+import com.example.historialvetservice.Client.MascotaClient;
+import com.example.historialvetservice.Dto.MascotaDTO;
+import feign.FeignException;
 import com.example.historialvetservice.Model.HistorialVet;
 import com.example.historialvetservice.Repository.HistorialVetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ public class HistorialVetService {
 
     @Autowired
     private HistorialVetRepository historialVetRepository;
+    @Autowired
+    private MascotaClient mascotaClient;
 
     public List<HistorialVet> listarHistoriales() {
         return historialVetRepository.findAll();
@@ -21,6 +25,15 @@ public class HistorialVetService {
 
         // Valida que el historial esté asociado a una mascota
         if (historialVet.getIdMascota() == null) {
+            return null;
+        }
+        try {
+            MascotaDTO mascota = mascotaClient.getMascotaById(historialVet.getIdMascota());
+
+            if (mascota == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 
@@ -42,6 +55,15 @@ public class HistorialVetService {
 
         // Mantiene solo el ID de mascota porque Mascota está en otro microservicio
         if (historialVet.getIdMascota() == null) {
+            return null;
+        }
+        try {
+            MascotaDTO mascota = mascotaClient.getMascotaById(historialVet.getIdMascota());
+
+            if (mascota == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 

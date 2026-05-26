@@ -1,7 +1,10 @@
 package com.example.visitaservice.Service;
 
+import com.example.visitaservice.Client.SolicitudClient;
+import com.example.visitaservice.Dto.SolicitudDTO;
 import com.example.visitaservice.Model.Visita;
 import com.example.visitaservice.Repository.VisitaRepository;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,9 @@ public class VisitaService {
     @Autowired
     private VisitaRepository visitaRepository;
 
+    @Autowired
+    private SolicitudClient solicitudClient;
+
     public List<Visita> listarVisitas() {
         return visitaRepository.findAll();
     }
@@ -21,6 +27,16 @@ public class VisitaService {
 
         // Valida que la visita esté asociada a una solicitud
         if (visita.getIdSolicitud() == null) {
+            return null;
+        }
+
+        try {
+            SolicitudDTO solicitud = solicitudClient.getSolicitudById(visita.getIdSolicitud());
+
+            if (solicitud == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 
@@ -42,6 +58,16 @@ public class VisitaService {
 
         // Mantiene solo el ID de solicitud porque está en otro microservicio
         if (visita.getIdSolicitud() == null) {
+            return null;
+        }
+
+        try {
+            SolicitudDTO solicitud = solicitudClient.getSolicitudById(visita.getIdSolicitud());
+
+            if (solicitud == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 

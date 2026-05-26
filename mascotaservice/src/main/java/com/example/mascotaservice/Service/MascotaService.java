@@ -1,7 +1,12 @@
 package com.example.mascotaservice.Service;
 
+import com.example.mascotaservice.Client.RazaClient;
+import com.example.mascotaservice.Client.RefugioClient;
+import com.example.mascotaservice.Dto.RazaDTO;
+import com.example.mascotaservice.Dto.RefugioDTO;
 import com.example.mascotaservice.Model.Mascota;
 import com.example.mascotaservice.Repository.MascotaRepository;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +18,12 @@ public class MascotaService {
     @Autowired
     private MascotaRepository mascotaRepository;
 
+    @Autowired
+    private RazaClient razaClient;
+
+    @Autowired
+    private RefugioClient refugioClient;
+
     public List<Mascota> listarMascotas() {
         return mascotaRepository.findAll();
     }
@@ -21,6 +32,26 @@ public class MascotaService {
 
         // Valida que la mascota tenga raza y refugio asignados antes de guardar
         if (mascota.getIdRaza() == null || mascota.getIdRefugio() == null) {
+            return null;
+        }
+
+        try {
+            RazaDTO raza = razaClient.getRazaById(mascota.getIdRaza());
+
+            if (raza == null) {
+                return null;
+            }
+        } catch (FeignException error) {
+            return null;
+        }
+
+        try {
+            RefugioDTO refugio = refugioClient.getRefugioById(mascota.getIdRefugio());
+
+            if (refugio == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 
@@ -45,6 +76,26 @@ public class MascotaService {
 
         // Actualiza la mascota manteniendo solo los IDs de raza y refugio
         if (mascota.getIdRaza() == null || mascota.getIdRefugio() == null) {
+            return null;
+        }
+
+        try {
+            RazaDTO raza = razaClient.getRazaById(mascota.getIdRaza());
+
+            if (raza == null) {
+                return null;
+            }
+        } catch (FeignException error) {
+            return null;
+        }
+
+        try {
+            RefugioDTO refugio = refugioClient.getRefugioById(mascota.getIdRefugio());
+
+            if (refugio == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 

@@ -1,5 +1,7 @@
 package com.example.usuarioservice.Service;
-
+import com.example.usuarioservice.Dto.RolUsuarioDTO;
+import feign.FeignException;
+import com.example.usuarioservice.Client.UsuarioClient;
 import com.example.usuarioservice.Model.Usuario;
 import com.example.usuarioservice.Repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,11 @@ import java.util.Optional;
 
 @Service
 public class UsuarioService {
-
+    @Autowired
+    private UsuarioClient usuarioClient;
     @Autowired
     private UsuarioRepository usuarioRepository;
+
 
     public List<Usuario> listarUsuarios(){
         return usuarioRepository.findAll();
@@ -21,15 +25,28 @@ public class UsuarioService {
     public Usuario guardarUsuario(Usuario usuario){
         String rutNormalizado = usuario.getRutUsuario().trim().toUpperCase();
         String emailNormalizado = usuario.getEmailUsuario().trim().toLowerCase();
+
         if (usuarioRepository.existsByRutUsuarioIgnoreCase(rutNormalizado)){
             return null;
         }
+
         if (usuarioRepository.existsByEmailUsuarioIgnoreCase(emailNormalizado)){
             return null;
         }
+
         if (usuario.getIdRol() == null) {
             return null;
         }
+        try {
+            RolUsuarioDTO rol = usuarioClient.getRolById(usuario.getIdRol());
+
+            if (rol == null) {
+                return null;
+            }
+        } catch (FeignException error) {
+            return null;
+        }
+
         usuario.setRutUsuario(rutNormalizado);
         usuario.setEmailUsuario(emailNormalizado);
 
@@ -42,6 +59,7 @@ public class UsuarioService {
 
     public Usuario actualizarUsuario(Integer id, Usuario usuario){
         Usuario usuarioExistente = usuarioRepository.findById(id).orElse(null);
+
         if(usuarioExistente == null){
             return null;
         }
@@ -64,6 +82,15 @@ public class UsuarioService {
         if(usuario.getIdRol() == null){
             return null;
         }
+        try {
+            RolUsuarioDTO rol = usuarioClient.getRolById(usuario.getIdRol());
+
+            if (rol == null) {
+                return null;
+            }
+        } catch (FeignException error) {
+            return null;
+        }
 
         usuarioExistente.setRutUsuario(rutNormalizado);
         usuarioExistente.setEmailUsuario(emailNormalizado);
@@ -84,6 +111,7 @@ public class UsuarioService {
         if(!usuarioRepository.existsById(id)){
             return false;
         }
+
         usuarioRepository.deleteById(id);
         return true;
     }

@@ -1,7 +1,10 @@
 package com.example.razaservice.Service;
 
+import com.example.razaservice.Client.RazaClient;
+import com.example.razaservice.Dto.EspecieDTO;
 import com.example.razaservice.Model.Raza;
 import com.example.razaservice.Repository.RazaRepository;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,9 @@ public class RazaService {
 
     @Autowired
     private RazaRepository razaRepository;
+
+    @Autowired
+    private RazaClient razaClient;
 
     public List<Raza> listarRazas() {
         return razaRepository.findAll();
@@ -26,6 +32,15 @@ public class RazaService {
         }
 
         if (raza.getIdEspecie() == null) {
+            return null;
+        }
+        try {
+            EspecieDTO especie = razaClient.getEspecieById(raza.getIdEspecie());
+
+            if (especie == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 
@@ -53,6 +68,15 @@ public class RazaService {
         }
 
         if (raza.getIdEspecie() == null) {
+            return null;
+        }
+        try {
+            EspecieDTO especie = razaClient.getEspecieById(raza.getIdEspecie());
+
+            if (especie == null) {
+                return null;
+            }
+        } catch (FeignException error) {
             return null;
         }
 

@@ -1,7 +1,10 @@
 package com.example.reporteservice.Service;
 
+import com.example.reporteservice.Client.UsuarioClient;
+import com.example.reporteservice.Dto.UsuarioDTO;
 import com.example.reporteservice.Model.Reporte;
 import com.example.reporteservice.Repository.ReporteRepository;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +16,26 @@ public class ReporteService {
     @Autowired
     private ReporteRepository reporteRepository;
 
+    @Autowired
+    private UsuarioClient usuarioClient;
+
     public List<Reporte> listarReportes() {
         return reporteRepository.findAll();
     }
 
     public Reporte guardarReporte(Reporte reporte) {
         if (reporte.getIdUsuario() == null) {
+            return null;
+        }
+
+        try {
+            UsuarioDTO usuario = usuarioClient.getUsuarioById(reporte.getIdUsuario());
+
+            if (usuario == null) {
+                return null;
+            }
+
+        } catch (FeignException error) {
             return null;
         }
 
@@ -41,6 +58,17 @@ public class ReporteService {
         }
 
         if (reporte.getIdUsuario() == null) {
+            return null;
+        }
+
+        try {
+            UsuarioDTO usuario = usuarioClient.getUsuarioById(reporte.getIdUsuario());
+
+            if (usuario == null) {
+                return null;
+            }
+
+        } catch (FeignException error) {
             return null;
         }
 

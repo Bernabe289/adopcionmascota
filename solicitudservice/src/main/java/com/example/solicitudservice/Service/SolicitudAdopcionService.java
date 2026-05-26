@@ -1,6 +1,8 @@
 package com.example.solicitudservice.Service;
 
+import com.example.solicitudservice.Client.MascotaClient;
 import com.example.solicitudservice.Client.UsuarioClient;
+import com.example.solicitudservice.Dto.MascotaDTO;
 import com.example.solicitudservice.Dto.UsuarioDTO;
 import com.example.solicitudservice.Model.SolicitudAdopcion;
 import com.example.solicitudservice.Repository.SolicitudAdopcionRepository;
@@ -18,6 +20,9 @@ public class SolicitudAdopcionService {
 
     @Autowired
     private UsuarioClient usuarioClient;
+
+    @Autowired
+    private MascotaClient mascotaClient;
 
     public List<SolicitudAdopcion> listarSolicitudes(){
         return solicitudAdopcionRepository.findAll();
@@ -45,6 +50,18 @@ public class SolicitudAdopcionService {
         if (solicitudAdopcion.getIdMascota() == null){
             return null;
         }
+
+        try {
+            MascotaDTO mascota = mascotaClient.getMascotaById(solicitudAdopcion.getIdMascota());
+
+            if (mascota == null) {
+                return null;
+            }
+
+        } catch (FeignException error) {
+            return null;
+        }
+
         solicitudAdopcion.setEstadoSolicitud(solicitudAdopcion.getEstadoSolicitud().trim().toUpperCase());
 
         if (solicitudAdopcion.getObservacionSolicitud() != null) {
@@ -76,6 +93,17 @@ public class SolicitudAdopcionService {
         }
 
         if (solicitudAdopcion.getIdMascota() == null) {
+            return null;
+        }
+
+        try {
+            MascotaDTO mascota = mascotaClient.getMascotaById(solicitudAdopcion.getIdMascota());
+
+            if (mascota == null) {
+                return null;
+            }
+
+        } catch (FeignException error) {
             return null;
         }
 

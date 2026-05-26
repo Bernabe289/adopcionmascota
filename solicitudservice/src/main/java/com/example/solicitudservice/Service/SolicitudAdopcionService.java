@@ -1,7 +1,10 @@
 package com.example.solicitudservice.Service;
 
+import com.example.solicitudservice.Client.UsuarioClient;
+import com.example.solicitudservice.Dto.UsuarioDTO;
 import com.example.solicitudservice.Model.SolicitudAdopcion;
 import com.example.solicitudservice.Repository.SolicitudAdopcionRepository;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,8 +12,12 @@ import java.util.List;
 
 @Service
 public class SolicitudAdopcionService {
+
     @Autowired
     private SolicitudAdopcionRepository solicitudAdopcionRepository;
+
+    @Autowired
+    private UsuarioClient usuarioClient;
 
     public List<SolicitudAdopcion> listarSolicitudes(){
         return solicitudAdopcionRepository.findAll();
@@ -23,6 +30,17 @@ public class SolicitudAdopcionService {
     public SolicitudAdopcion guardarSolicitud (SolicitudAdopcion solicitudAdopcion){
         if (solicitudAdopcion.getIdUsuario() == null){
             return null;
+        }
+        try {
+            UsuarioDTO usuario = usuarioClient.getUsuarioById(solicitudAdopcion.getIdUsuario());
+
+            if (usuario == null) {
+                return null;
+            }
+
+        } catch (FeignException error) {
+            return null;
+
         }
         if (solicitudAdopcion.getIdMascota() == null){
             return null;
@@ -43,6 +61,17 @@ public class SolicitudAdopcionService {
         }
 
         if (solicitudAdopcion.getIdUsuario() == null) {
+            return null;
+        }
+
+        try {
+            UsuarioDTO usuario = usuarioClient.getUsuarioById(solicitudAdopcion.getIdUsuario());
+
+            if (usuario == null) {
+                return null;
+            }
+
+        } catch (FeignException error) {
             return null;
         }
 

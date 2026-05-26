@@ -1,7 +1,10 @@
 package com.example.evaluacionadoptanteservice.Service;
 
+import com.example.evaluacionadoptanteservice.Client.SolicitudAdopcionClient;
+import com.example.evaluacionadoptanteservice.Dto.SolicitudAdopcionDTO;
 import com.example.evaluacionadoptanteservice.Model.EvaluacionAdoptante;
 import com.example.evaluacionadoptanteservice.Repository.EvaluacionAdoptanteRepository;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,9 @@ public class EvaluacionAdoptanteService {
     @Autowired
     private EvaluacionAdoptanteRepository evaluacionAdoptanteRepository;
 
+    @Autowired
+    private SolicitudAdopcionClient solicitudAdopcionClient;
+
     public List<EvaluacionAdoptante> listarEvaluaciones() {
         return evaluacionAdoptanteRepository.findAll();
     }
@@ -22,6 +28,17 @@ public class EvaluacionAdoptanteService {
             return null;
         }
 
+        try {
+            SolicitudAdopcionDTO solicitud = solicitudAdopcionClient.getSolicitudById(evaluacionAdoptante.getIdSolicitud());
+
+            if (solicitud == null) {
+                return null;
+            }
+
+        } catch (FeignException error) {
+            return null;
+
+        }
         evaluacionAdoptante.setResultadoEvaluacion(evaluacionAdoptante.getResultadoEvaluacion().trim().toUpperCase());
 
         if (evaluacionAdoptante.getObservacionEvaluacion() != null) {
@@ -43,6 +60,17 @@ public class EvaluacionAdoptanteService {
         }
 
         if (evaluacionAdoptante.getIdSolicitud() == null) {
+            return null;
+        }
+
+        try {
+            SolicitudAdopcionDTO solicitud = solicitudAdopcionClient.getSolicitudById(evaluacionAdoptante.getIdSolicitud());
+
+            if (solicitud == null) {
+                return null;
+            }
+
+        } catch (FeignException error) {
             return null;
         }
 

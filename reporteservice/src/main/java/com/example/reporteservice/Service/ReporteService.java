@@ -5,12 +5,14 @@ import com.example.reporteservice.Dto.UsuarioDTO;
 import com.example.reporteservice.Model.Reporte;
 import com.example.reporteservice.Repository.ReporteRepository;
 import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class ReporteService {
 
     @Autowired
@@ -20,11 +22,13 @@ public class ReporteService {
     private UsuarioClient usuarioClient;
 
     public List<Reporte> listarReportes() {
+        log.info("Listando reportes");
         return reporteRepository.findAll();
     }
 
     public Reporte guardarReporte(Reporte reporte) {
         if (reporte.getIdUsuario() == null) {
+            log.warn("No se pudo crear el reporte: idUsuario viene null");
             return null;
         }
 
@@ -32,10 +36,12 @@ public class ReporteService {
             UsuarioDTO usuario = usuarioClient.getUsuarioById(reporte.getIdUsuario());
 
             if (usuario == null) {
+                log.warn("No se pudo crear el reporte: usuario ID {} no existe", reporte.getIdUsuario());
                 return null;
             }
 
         } catch (FeignException error) {
+            log.warn("No se pudo crear el reporte: usuario ID {} no existe", reporte.getIdUsuario());
             return null;
         }
 
@@ -43,10 +49,17 @@ public class ReporteService {
         reporte.setDescripcionReporte(reporte.getDescripcionReporte().trim());
         reporte.setEstadoReporte(reporte.getEstadoReporte().trim().toUpperCase());
 
-        return reporteRepository.save(reporte);
+        Reporte reporteGuardado = reporteRepository.save(reporte);
+
+        log.info("Reporte creado correctamente con ID {} para usuario ID {}",
+                reporteGuardado.getIdReporte(),
+                reporteGuardado.getIdUsuario());
+
+        return reporteGuardado;
     }
 
     public Reporte buscarPorId(Integer id) {
+        log.info("Buscando reporte con ID {}", id);
         return reporteRepository.findById(id).orElse(null);
     }
 
@@ -54,10 +67,12 @@ public class ReporteService {
         Reporte reporteExistente = reporteRepository.findById(id).orElse(null);
 
         if (reporteExistente == null) {
+            log.warn("No se pudo actualizar el reporte: no existe reporte con ID {}", id);
             return null;
         }
 
         if (reporte.getIdUsuario() == null) {
+            log.warn("No se pudo actualizar el reporte ID {}: idUsuario viene null", id);
             return null;
         }
 
@@ -65,10 +80,14 @@ public class ReporteService {
             UsuarioDTO usuario = usuarioClient.getUsuarioById(reporte.getIdUsuario());
 
             if (usuario == null) {
+                log.warn("No se pudo actualizar el reporte ID {}: usuario ID {} no existe",
+                        id, reporte.getIdUsuario());
                 return null;
             }
 
         } catch (FeignException error) {
+            log.warn("No se pudo actualizar el reporte ID {}: usuario ID {} no existe",
+                    id, reporte.getIdUsuario());
             return null;
         }
 
@@ -78,15 +97,21 @@ public class ReporteService {
         reporteExistente.setEstadoReporte(reporte.getEstadoReporte().trim().toUpperCase());
         reporteExistente.setIdUsuario(reporte.getIdUsuario());
 
-        return reporteRepository.save(reporteExistente);
+        Reporte reporteActualizado = reporteRepository.save(reporteExistente);
+
+        log.info("Reporte actualizado correctamente con ID {}", reporteActualizado.getIdReporte());
+
+        return reporteActualizado;
     }
 
     public boolean eliminarReporte(Integer id) {
         if (!reporteRepository.existsById(id)) {
+            log.warn("No se pudo eliminar el reporte: no existe reporte con ID {}", id);
             return false;
         }
 
         reporteRepository.deleteById(id);
+        log.info("Reporte eliminado correctamente con ID {}", id);
         return true;
     }
 }

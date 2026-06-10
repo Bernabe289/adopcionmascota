@@ -79,4 +79,6 @@ public class MascotaController {
 
         return ResponseEntity.ok("Se eliminó correctamente.");
     }
+
+
 }

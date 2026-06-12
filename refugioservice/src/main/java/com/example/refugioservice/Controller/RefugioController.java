@@ -3,6 +3,7 @@ package com.example.refugioservice.Controller;
 import com.example.refugioservice.Model.Refugio;
 import com.example.refugioservice.Service.RefugioService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,7 +50,8 @@ public class RefugioController {
             @ApiResponse(responseCode = "404", description = "Refugio no encontrado."),
             @ApiResponse(responseCode = "200", description = "Refugio encontrado con exito")
     })
-    public ResponseEntity<Refugio> getRefugioById(@PathVariable Integer id) {
+    public ResponseEntity<Refugio> getRefugioById(@Parameter(description = "ID del refugio", example = "1")
+                                                      @PathVariable Integer id) {
         Refugio refugio = refugioService.buscarPorId(id);
 
         if (refugio == null) {
@@ -88,7 +90,8 @@ public class RefugioController {
             @ApiResponse(responseCode = "409", description = "Refugio no encontrado, no es posible actualizar."),
             @ApiResponse(responseCode = "200", description = "Refugio actualizado con exito")
     })
-    public ResponseEntity<?> updateRefugio(@PathVariable Integer id, @Valid @RequestBody Refugio refugio) {
+    public ResponseEntity<?> updateRefugio(@Parameter(description = "ID del refugio a Actualizar", example = "1")
+                                               @PathVariable Integer id, @Valid @RequestBody Refugio refugio) {
         Refugio refugioActualizado = refugioService.actualizarRefugio(id, refugio);
 
         if (refugioActualizado == null) {
@@ -108,7 +111,8 @@ public class RefugioController {
             @ApiResponse(responseCode = "409", description = "Refugio no encontrado, no es posible eliminar."),
             @ApiResponse(responseCode = "200", description = "Refugio eliminado con exito")
     })
-    public ResponseEntity<String> deleteRefugio(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteRefugio(@Parameter(description = "ID del refugio a Eliminar", example = "1")
+                                                    @PathVariable Integer id) {
         boolean eliminado = refugioService.eliminarRefugio(id);
 
         if (!eliminado) {

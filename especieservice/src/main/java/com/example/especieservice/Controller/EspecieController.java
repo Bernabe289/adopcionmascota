@@ -4,6 +4,7 @@ package com.example.especieservice.Controller;
 import com.example.especieservice.Model.Especie;
 import com.example.especieservice.Service.EspecieService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -71,7 +72,8 @@ public class EspecieController {
             @ApiResponse(responseCode = "409", description = "Error, no se pudo encontrar la especie"),
             @ApiResponse(responseCode = "200", description = "Especie encontrada con ecxito")
     })
-    public ResponseEntity<Especie> getId(@PathVariable Integer id) {
+    public ResponseEntity<Especie> getId(@Parameter(description = "ID de la especie", example = "1")
+                                             @PathVariable Integer id) {
         Especie especie = especieService.buscarPorId(id);
 
         if (especie == null) {
@@ -89,7 +91,8 @@ public class EspecieController {
                 @ApiResponse(responseCode = "404", description = "Error, especie no encontrada"),
                 @ApiResponse(responseCode = "200", description = "Especie actualizada con exito")
         })
-        public ResponseEntity<Especie> updateEspecie (@PathVariable Integer id, @Valid @RequestBody Especie especie){
+        public ResponseEntity<Especie> updateEspecie (@Parameter(description = "ID de la especie a Actualizar", example = "1")
+                                                              @PathVariable Integer id, @Valid @RequestBody Especie especie){
             Especie especieActualizada = especieService.actualizarEspecie(id, especie);
             if (especieActualizada == null) {
                 return ResponseEntity.notFound().build(); //404
@@ -106,7 +109,8 @@ public class EspecieController {
                 @ApiResponse(responseCode = "404", description = "Error, no se encontro la especie"),
                 @ApiResponse(responseCode = "200", description = "Especie eliminada con exito")
         })
-        public ResponseEntity<String> deleteEspecie (@PathVariable Integer id){
+        public ResponseEntity<String> deleteEspecie (@Parameter(description = "ID de la especie a Eliminar", example = "1")
+                                                             @PathVariable Integer id){
             boolean eliminado = especieService.eliminarEspecie(id);
 
 

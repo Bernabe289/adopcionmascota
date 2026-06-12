@@ -3,6 +3,7 @@ package com.example.razaservice.Controller;
 import com.example.razaservice.Model.Raza;
 import com.example.razaservice.Service.RazaService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -69,7 +70,8 @@ public class RazaController {
             @ApiResponse(responseCode = "404", description = "Raza no encontrada"),
             @ApiResponse(responseCode = "200", description = "Raza encontradas con exito")
     })
-    public ResponseEntity<Raza> getId(@PathVariable Integer id) {
+    public ResponseEntity<Raza> getId(@Parameter(description = "ID de la raza", example = "1")
+                                          @PathVariable Integer id) {
         Raza raza = razaService.buscarPorId(id);
 
         if (raza == null) {
@@ -89,7 +91,8 @@ public class RazaController {
             @ApiResponse(responseCode = "400", description = "Datos invalidos o raza no existente"),
             @ApiResponse(responseCode = "200", description = "Raza actualizada con exito")
     })
-    public ResponseEntity<?> updateRaza(@PathVariable Integer id, @Valid @RequestBody Raza raza) {
+    public ResponseEntity<?> updateRaza(@Parameter(description = "ID de la raza a actualizar", example = "1")
+                                            @PathVariable Integer id, @Valid @RequestBody Raza raza) {
         Raza razaExistente = razaService.buscarPorId(id);
 
         if (razaExistente == null) {
@@ -114,7 +117,8 @@ public class RazaController {
             @ApiResponse(responseCode = "404", description = "Raza no encontrada"),
             @ApiResponse(responseCode = "200", description = "Raza eliminada con exito")
     })
-    public ResponseEntity<String> deleteRaza(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteRaza(@Parameter(description = "ID de la raza a eliminar", example = "1")
+                                                 @PathVariable Integer id) {
         boolean eliminado = razaService.eliminarRaza(id);
 
         if (!eliminado) {

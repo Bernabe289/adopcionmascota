@@ -3,6 +3,7 @@ package com.example.rolservice.Controller;
 import com.example.rolservice.Model.RolUsuario;
 import com.example.rolservice.Service.RolUsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -68,7 +69,8 @@ public class RolUsuarioController {
             @ApiResponse(responseCode = "404", description = "Error, rol no encontrado"),
             @ApiResponse(responseCode = "200", description = "Rol encontrado dentro del sistema")
     })
-    public ResponseEntity<RolUsuario> getId(@PathVariable Integer id){
+    public ResponseEntity<RolUsuario> getId(@Parameter(description = "ID del rol", example = "1")
+                                                @PathVariable Integer id){
         RolUsuario rolUsuario = rolUsuarioService.buscarPorId(id);
 
         if (rolUsuario == null){
@@ -87,7 +89,8 @@ public class RolUsuarioController {
             @ApiResponse(responseCode = "404", description = "Error, rol no encontrado"),
             @ApiResponse(responseCode = "200", description = "Rol actualizado con exito")
     })
-    public ResponseEntity<RolUsuario> updateRol(@PathVariable Integer id, @Valid @RequestBody RolUsuario rolUsuario){
+    public ResponseEntity<RolUsuario> updateRol(@Parameter(description = "ID del rol a Actualizar", example = "1")
+                                                    @PathVariable Integer id, @Valid @RequestBody RolUsuario rolUsuario){
         RolUsuario rolActualizado = rolUsuarioService.actualizarRol(id, rolUsuario);
 
         if (rolActualizado == null){
@@ -106,7 +109,8 @@ public class RolUsuarioController {
             @ApiResponse(responseCode = "404", description = "Error, rol no encontrado"),
             @ApiResponse(responseCode = "200", description = "Rol eliminado con exito")
     })
-    public ResponseEntity<String> deleteRol(@PathVariable Integer id){
+    public ResponseEntity<String> deleteRol(@Parameter(description = "ID del rol a Eliminar", example = "1")
+                                                @PathVariable Integer id){
         boolean eliminado = rolUsuarioService.eliminarRol(id);
 
                 if(!eliminado){

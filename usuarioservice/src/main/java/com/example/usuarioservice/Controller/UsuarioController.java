@@ -3,6 +3,7 @@ package com.example.usuarioservice.Controller;
 import com.example.usuarioservice.Model.Usuario;
 import com.example.usuarioservice.Service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -66,7 +67,8 @@ public class UsuarioController {
             @ApiResponse(responseCode = "200", description = "Usuario encontrado con exito"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado en el sistema")
     })
-    public ResponseEntity<Usuario> getUsuarioById(@PathVariable Integer id){
+    public ResponseEntity<Usuario> getUsuarioById(@Parameter(description = "ID del usuario", example = "1")
+                                                      @PathVariable Integer id){
         Usuario usuario = usuarioService.buscarPorId(id);
 
         if(usuario == null){
@@ -84,7 +86,8 @@ public class UsuarioController {
             @ApiResponse(responseCode = "200", description = "Usuario actualizado con exito"),
             @ApiResponse(responseCode = "409", description = "El usuario no se pudo actualizar, hay conflicto con los datos ingresados")
     })
-    public ResponseEntity<?> updateUsuario(@PathVariable Integer id, @Valid @RequestBody Usuario usuario){
+    public ResponseEntity<?> updateUsuario(@Parameter(description = "ID del usuario a actualizar", example = "1")
+                                               @PathVariable Integer id, @Valid @RequestBody Usuario usuario){
         Usuario usuarioActualizado = usuarioService.actualizarUsuario(id, usuario);
 
         if(usuarioActualizado == null){
@@ -102,7 +105,8 @@ public class UsuarioController {
             @ApiResponse(responseCode = "404", description = "Error, el usuario no ha sido encontrado dentro del sistema."),
             @ApiResponse(responseCode = "200", description = "El usuario ha sido eliminado con exito.")
     })
-    public ResponseEntity<String> deleteUsuario(@PathVariable Integer id){
+    public ResponseEntity<String> deleteUsuario(@Parameter(description = "Id del usuario a eliminar", example = "1")
+                                                    @PathVariable Integer id){
         boolean userEliminado = usuarioService.eliminarUsuario(id);
 
         if (!userEliminado){

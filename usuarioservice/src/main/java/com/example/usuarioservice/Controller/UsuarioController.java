@@ -27,7 +27,7 @@ public class UsuarioController {
             description = "Obtiene la lista de todos los usuarios registrados en el sistema."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuarios encontrados correctamente"),
+            @ApiResponse(responseCode = "200", description = "Usuarios encontrados con exito"),
             @ApiResponse(responseCode = "204", description = "No existen usuarios registrados")
     })
     public ResponseEntity<List<Usuario>> getUsuario(){

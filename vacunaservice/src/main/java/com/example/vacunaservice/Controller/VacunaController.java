@@ -6,18 +6,40 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+
+import com.example.vacunaservice.Model.Vacuna;
+import com.example.vacunaservice.Service.VacunaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/vacunas")
+@Tag(name = "Vacuna Service", description = "API para la gestion de vacunas")
 public class VacunaController {
 
     @Autowired
     private VacunaService vacunaService;
 
     @GetMapping
+    @Operation(
+            summary = "Listar vacunas",
+            description = "Obtiene la lista de todas las vacunas registradas en el sistema"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vacunas encontradas con exito"),
+            @ApiResponse(responseCode = "204", description = "No hay vacunas dentro del sistema")
+    })
     public ResponseEntity<List<Vacuna>> getVacunas() {
         List<Vacuna> vacunas = vacunaService.listarVacunas();
 
@@ -29,6 +51,15 @@ public class VacunaController {
     }
 
     @PostMapping
+    @Operation(
+            summary = "Crear vacuna",
+            description = "Registra vacunas dentro del sistema"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "409", description = "Esta vacuna ya se encuentra en el sistema"),
+            @ApiResponse(responseCode = "201", description = "Vacuna creada con exito")
+
+    })
     public ResponseEntity<?> createVacuna(@Valid @RequestBody Vacuna vacuna) {
         Vacuna nuevaVacuna = vacunaService.guardarVacuna(vacuna);
 
@@ -41,7 +72,16 @@ public class VacunaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Vacuna> getId(@PathVariable Integer id) {
+    @Operation(
+            summary = "Buscar vacuna",
+            description = "Buscar vacuna por su id asociado"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Vacuna no encontrada"),
+            @ApiResponse(responseCode = "200", description = "Vacuna encontrada dentro del sistema")
+    })
+    public ResponseEntity<Vacuna> getId(@Parameter(description = "ID de la vacuna", example = "1")
+                                        @PathVariable Integer id) {
         Vacuna vacuna = vacunaService.buscarPorId(id);
 
         if (vacuna == null) {
@@ -52,7 +92,16 @@ public class VacunaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateVacuna(@PathVariable Integer id, @Valid @RequestBody Vacuna vacuna) {
+    @Operation(
+            summary = "Actualizar vacuna",
+            description = "Actualiza una vacuna por su id asociada"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Vacuna no encontrada"),
+            @ApiResponse(responseCode = "200", description = "Vacuna actualizada con exito")
+    })
+    public ResponseEntity<?> updateVacuna(@Parameter(description = "ID de la vacuna a Actualizar", example = "1")
+                                          @PathVariable Integer id, @Valid @RequestBody Vacuna vacuna) {
         Vacuna vacunaExistente = vacunaService.buscarPorId(id);
 
         if (vacunaExistente == null) {
@@ -70,7 +119,17 @@ public class VacunaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteVacuna(@PathVariable Integer id) {
+    @Operation(
+            summary = "Eliminar vacuna",
+            description = "Elimina una vacuna por su id"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Vacuna no encontrada"),
+            @ApiResponse(responseCode = "200", description = "Vacuna eliminada con exito")
+
+    })
+    public ResponseEntity<String> deleteVacuna(@Parameter(description = "ID de la vacuna a Eliminar", example = "1")
+                                               @PathVariable Integer id) {
         boolean eliminado = vacunaService.eliminarVacuna(id);
 
         if (!eliminado) {

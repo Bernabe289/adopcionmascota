@@ -2,6 +2,11 @@ package com.example.seguimientoservice.Controller;
 
 import com.example.seguimientoservice.Model.Seguimiento;
 import com.example.seguimientoservice.Service.SeguimientoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,12 +17,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/seguimientos")
+@Tag(name = "Rol Usuario", description = "API para la gestion de seguimiento")
 public class SeguimientoController {
 
     @Autowired
     private SeguimientoService seguimientoService;
 
     @GetMapping
+    @Operation(
+            summary = "Listar seguimiento",
+            description = "Obtiene la lista de todos los seguimientos registrados en el sistema."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Seguimientos encontrados con exito"),
+            @ApiResponse(responseCode = "204", description = "No hay seguimientos dentro del sistema")
+    })
     public ResponseEntity<List<Seguimiento>> getSeguimientos() {
         List<Seguimiento> seguimientos = seguimientoService.listarSeguimientos();
 
@@ -29,6 +43,14 @@ public class SeguimientoController {
     }
 
     @PostMapping
+    @Operation(
+            summary = "Crear seguimiento",
+            description = "Registra seguimientos dentro del sistema"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "409", description = "Este seguimiento ya se encuentra dentro del sistema"),
+            @ApiResponse(responseCode = "201", description = "Seguimiento creado con exito")
+    })
     public ResponseEntity<?> createSeguimiento(@Valid @RequestBody Seguimiento seguimiento) {
         Seguimiento nuevoSeguimiento = seguimientoService.guardarSeguimiento(seguimiento);
 
@@ -41,7 +63,16 @@ public class SeguimientoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Seguimiento> getId(@PathVariable Integer id) {
+    @Operation(
+            summary = "Buscar seguimiento",
+            description = "Buscar un seguimiento por su id asociado"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Seguimiento no encontrado"),
+            @ApiResponse(responseCode = "200", description = "Seguimiento encontrado dentro del sistema")
+    })
+    public ResponseEntity<Seguimiento> getId(@Parameter(description = "ID del seguimiento", example = "1")
+                                             @PathVariable Integer id) {
         Seguimiento seguimiento = seguimientoService.buscarPorId(id);
 
         if (seguimiento == null) {
@@ -52,7 +83,16 @@ public class SeguimientoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSeguimiento(@PathVariable Integer id, @Valid @RequestBody Seguimiento seguimiento) {
+    @Operation(
+            summary = "Actualizar seguimiento",
+            description = "Actualiza el seguimiento por su id asociado"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Seguimiento no encontrado"),
+            @ApiResponse(responseCode = "200", description = "Seguimiento actualizado con exito")
+    })
+    public ResponseEntity<?> updateSeguimiento(@Parameter(description = "ID del seguimiento a Actualizar", example = "1")
+                                               @PathVariable Integer id, @Valid @RequestBody Seguimiento seguimiento) {
         Seguimiento seguimientoExistente = seguimientoService.buscarPorId(id);
 
         if (seguimientoExistente == null) {
@@ -70,7 +110,16 @@ public class SeguimientoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteSeguimiento(@PathVariable Integer id) {
+    @Operation(
+            summary = "Eliminar seguimiento",
+            description = "Elimina el seguimiento asociado por su id"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Seguimiento no encontrado"),
+            @ApiResponse(responseCode = "200", description = "Seguimiento eliminado con exito")
+    })
+    public ResponseEntity<String> deleteSeguimiento(@Parameter(description = "ID del seguimiento a Eliminar", example = "1")
+                                                    @PathVariable Integer id) {
         boolean eliminado = seguimientoService.eliminarSeguimiento(id);
 
         if (!eliminado) {

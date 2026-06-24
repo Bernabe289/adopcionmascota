@@ -1,0 +1,93 @@
+spring:
+  application:
+    name: apigateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: rolservice
+              uri: lb://rolservice
+              predicates:
+                - Path=/api/v1/roles/**
+
+            - id: usuarioservice
+              uri: lb://usuarioservice
+              predicates:
+                - Path=/api/v1/usuarios/**
+
+            - id: especieservice
+              uri: lb://especieservice
+              predicates:
+                - Path=/api/v1/especies/**
+
+            - id: razaservice
+              uri: lb://razaservice
+              predicates:
+                - Path=/api/v1/razas/**
+
+            - id: refugioservice
+              uri: lb://refugioservice
+              predicates:
+                - Path=/api/v1/refugios/**
+
+            - id: mascotaservice
+              uri: lb://mascotaservice
+              predicates:
+                - Path=/api/v1/mascotas/**
+
+            - id: solicitudservice
+              uri: lb://solicitudservice
+              predicates:
+                - Path=/api/v1/solicitudes/**
+
+            - id: evaluacionadoptanteservice
+              uri: lb://evaluacionadoptanteservice
+              predicates:
+                - Path=/api/v1/evaluaciones/**
+
+            - id: documentoadopcionservice
+              uri: lb://documentoadopcionservice
+              predicates:
+                - Path=/api/v1/documentos/**
+
+            - id: historialvetservice
+              uri: lb://historialvetservice
+              predicates:
+                - Path=/api/v1/historiales/**
+
+            - id: vacunaservice
+              uri: lb://vacunaservice
+              predicates:
+                - Path=/api/v1/vacunas/**
+
+            - id: visitaservice
+              uri: lb://visitaservice
+              predicates:
+                - Path=/api/v1/visitas/**
+
+            - id: seguimientoservice
+              uri: lb://seguimientoservice
+              predicates:
+                - Path=/api/v1/seguimientos/**
+
+            - id: reporteservice
+              uri: lb://reporteservice
+              predicates:
+                - Path=/api/v1/reportes/**
+
+            - id: notificacionservice
+              uri: lb://notificacionservice
+              predicates:
+                - Path=/api/v1/notificaciones/**
+
+server:
+  port: 8099
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true

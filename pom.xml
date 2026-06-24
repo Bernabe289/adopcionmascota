@@ -11,6 +11,7 @@
 	<groupId>com.adopcion</groupId>
 	<artifactId>adopcionmascota</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name/>
 	<description/>
 	<url/>
@@ -20,6 +21,26 @@
 	<developers>
 		<developer/>
 	</developers>
+	<modules>
+			<module>apigateway</module>
+			<module>EurekaServer</module>
+			<module>usuarioservice</module>
+			<module>rolservice</module>
+			<module>especieservice</module>
+			<module>razaservice</module>
+			<module>refugioservice</module>
+			<module>mascotaservice</module>
+			<module>solicitudservice</module>
+			<module>evaluacionadoptanteservice</module>
+			<module>documentoadopcionservice</module>
+			<module>historialvetservice</module>
+			<module>vacunaservice</module>
+			<module>visitaservice</module>
+			<module>seguimientoservice</module>
+			<module>reporteservice</module>
+			<module>notificacionservice</module>
+	</modules>
+
 	<scm>
 		<connection/>
 		<developerConnection/>
